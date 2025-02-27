@@ -1115,9 +1115,9 @@
                             @endauth
                         @endif
 
-                        <a href="#" class="cart-link">
+                        <a href="{{ route('cart') }}" class="cart-link">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">0</span>
+                            <span class="cart-count">{{ $cart_count }}</span>
                         </a>
                     </div>
 
@@ -1134,7 +1134,12 @@
         <div class="container">
             <h1>All Products</h1>
         </div>
+        {{-- @php
+        dd(session()->all());
+        @endphp --}}
     </section>
+    <x-error-message />
+    <x-success-message />
 
     <!-- Products Section with Filtering -->
     <section class="products-section">
@@ -1342,8 +1347,24 @@
                                         <img src="{{ $product->image }}" alt="{{ $product->name }}">
                                         <div class="product-actions">
                                             <button class="action-btn"><i class="fas fa-heart"></i></button>
-                                            <button class="action-btn"><i class="fas fa-shopping-cart"></i></button>
-                                            <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                            <form action="{{ route('cart.add') }}" method="POST"
+                                                class="add-to-cart-form">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                                                <input type="hidden" name="quantity" value="1" min="1"
+                                                    max="{{ $product->stock }}" class="quantity-input">
+                                                @if ($product->stock > 0)
+                                                    <button type="submit"
+                                                        class="action-btn {{ $product->stock <= 0 ? 'disabled' : '' }}"
+                                                        {{ $product->stock <= 0 ? 'disabled' : '' }}>
+                                                        <i class="fas fa-shopping-cart"></i>
+                                                    </button>
+                                                @endif
+
+                                            </form>
+                                            <a href="{{ route('products.show', $product->id) }}"
+                                                class="action-btn"><i class="fas fa-eye"></i></a>
                                         </div>
                                     </div>
                                     <div class="product-info">

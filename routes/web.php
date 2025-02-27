@@ -22,11 +22,18 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     $categories = Category::all();
     $products = Product::paginate(4);
-    return view('welcome', compact('categories', 'products'));
+    $cart_count = count(session()->get('cart'));
+    return view('welcome', compact('categories', 'products', 'cart_count'));
 });
 
 Route::get('products', [ProductController::class, 'all'])->name('products.all');
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/cart', [ProductController::class, 'cart'])->name('cart');
+Route::post('/cart/add', [ProductController::class, 'addToCart'])->name('cart.add');
+Route::put('/cart/update', [ProductController::class, 'updateCart'])->name('cart.update');
+Route::post('/cart/remove', [ProductController::class, 'removeFromCart'])->name('cart.remove');
+Route::get('/checkout', [ProductController::class, 'checkout'])->name('checkout');
 
 
 Route::get('/dashboard', function () {

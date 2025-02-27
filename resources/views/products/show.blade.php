@@ -1,16 +1,3 @@
-{{-- @if (Route::has('login'))
-            <div class="fixed top-0 right-0 p-6 sm-block">
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 dark-text-gray-500 underline">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark-text-gray-500 underline">Log in</a>
-
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="text-sm text-gray-700 dark-text-gray-500 underline ml-4">Register</a>
-                    @endif
-                @endauth
-            </div>
-        @endif --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -19,18 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Professional cameras and photography equipment">
 
-    <title>CameraHub - Professional Photography Equipment</title>
+    <title>CameraHub - All Products</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
         /* ======= Base Styles ======= */
@@ -1104,8 +1088,8 @@
 
                 <nav class="main-nav">
                     <ul>
-                        <li><a href="#" class="active">Home</a></li>
-                        <li><a href="#">Shop</a></li>
+                        <li><a href="{{ url('/') }}">Home</a></li>
+                        <li><a href="{{ route('products.all') }}" class="active">Shop</a></li>
                         <li><a href="#">Brands</a></li>
                         <li><a href="#">Lenses</a></li>
                         <li><a href="#">Accessories</a></li>
@@ -1115,8 +1099,9 @@
 
                 <div class="header-actions">
                     <div class="search-form">
-                        <form action="#" method="GET">
-                            <input type="text" placeholder="Search products..." name="search">
+                        <form action="{{ route('products.search') }}" method="GET">
+                            <input type="text" placeholder="Search products..." name="search"
+                                value="{{ request('search') }}">
                             <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
@@ -1130,7 +1115,7 @@
                             @endauth
                         @endif
 
-                        <a href="{{ route('cart') }}" class="cart-link">
+                        <a href="{{route('cart')}}" class="cart-link">
                             <i class="fas fa-shopping-cart"></i>
                             <span class="cart-count">{{ $cart_count }}</span>
                         </a>
@@ -1143,325 +1128,197 @@
             </div>
         </div>
     </header>
-    <x-error-message />
-    <x-success-message />
-    <!-- Hero Section -->
-    <section class="hero-section">
+
+    <!-- Page Title -->
+    {{-- <section class="page-title-client">
         <div class="container">
-            
-            <div class="hero-content">
-                <h2>Professional Cameras for Every Photographer</h2>
-                <p>Discover the perfect equipment to capture your vision with unparalleled clarity and precision.</p>
-                <div class="hero-buttons">
-                    <a href="#featured" class="btn btn-primary">Shop Now</a>
-                    <a href="#" class="btn btn-outline">Learn More</a>
+            <h1>All Products</h1>
+        </div>
+    </section> --}}
+    <div class="container">
+        <div class="breadcrumbs">
+            <a href="{{ url('/') }}">Home</a>
+            <span>/</span>
+            <a href="{{ route('products.all') }}">Products</a>
+            <span>/</span>
+            <a href="">{{ $product->subcategory->category->name }}</a>
+            <span>/</span>
+            <a href="">{{ $product->subcategory->name }}</a>
+            <span>/</span>
+            <span class="current">{{ $product->name }}</span>
+        </div>
+        <x-error-message />
+        <x-success-message />
+        <div class="product-details">
+            <div class="product-gallery">
+                <div class="main-image">
+                    <img src="{{ $product->image }}" alt="{{ $product->name }}">
+                    @if ($product->created_at->diffInDays(now()) < 30)
+                        <div class="product-badge detail-badge">New</div>
+                    @elseif($product->sale_price && $product->sale_price < $product->price)
+                        <div class="product-badge sale detail-badge">Sale</div>
+                    @endif
+                </div>
+
+                <!-- If you have additional product images, you can add them here -->
+                <div class="thumbnail-gallery">
+                    <div class="thumbnail active">
+                        <img src="{{ $product->image }}" alt="{{ $product->name }}">
+                    </div>
+                    <!-- Additional images would go here -->
+                </div>
+            </div>
+
+            <div class="product-info-details">
+                <div class="product-category-path">
+                    {{ $product->subcategory->category->name }} / {{ $product->subcategory->name }}
+                </div>
+
+                <h1 class="product-name">{{ $product->name }}</h1>
+
+                <div class="product-price-details">
+                    @if ($product->sale_price && $product->sale_price < $product->price)
+                        <span class="old-price">${{ $product->price }}</span>
+                        <span class="current-price">${{ $product->sale_price }}</span>
+                        <span class="discount-percentage">
+                            {{ round((($product->price - $product->sale_price) / $product->price) * 100) }}% OFF
+                        </span>
+                    @else
+                        <span class="current-price">${{ $product->price }}</span>
+                    @endif
+                </div>
+
+                <div class="product-stock">
+                    <span class="stock-status {{ $product->stock > 0 ? 'in-stock' : 'out-of-stock' }}">
+                        <i class="fas {{ $product->stock > 0 ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
+                        {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                        ({{ $product->stock }} available)
+                    </span>
+                </div>
+
+                <div class="product-description">
+                    <h3>Description</h3>
+                    <div class="description-content">
+                        {{ $product->description }}
+                    </div>
+                </div>
+
+                <div class="product-actions-container">
+                    <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                        <div class="quantity-control">
+                            <button type="button" class="quantity-btn minus"><i class="fas fa-minus"></i></button>
+                            <input type="number" name="quantity" value="1" min="1"
+                                max="{{ $product->stock }}" class="quantity-input">
+                            <button type="button" class="quantity-btn plus"><i class="fas fa-plus"></i></button>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button type="submit" class="cart-btn {{ $product->stock <= 0 ? 'disabled' : '' }}"
+                                {{ $product->stock <= 0 ? 'disabled' : '' }}>
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+
+                            <button type="button" class="wishlist-btn">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">SKU:</span>
+                        <span class="meta-value">{{ $product->sku ?? 'N/A' }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Category:</span>
+                        <span class="meta-value">{{ $product->subcategory->category->name }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Subcategory:</span>
+                        <span class="meta-value">{{ $product->subcategory->name }}</span>
+                    </div>
+                </div>
+
+                <div class="product-share">
+                    <span>Share:</span>
+                    <a href="#" class="social-share facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-share twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-share pinterest"><i class="fab fa-pinterest-p"></i></a>
+                    <a href="#" class="social-share instagram"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Categories Section -->
-    <section class="categories-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Browse Categories</h2>
-                <p>Find exactly what you need for your next shoot</p>
-            </div>
-
-            <div class="categories-grid">
-                @foreach ($categories as $category)
-                    <a href="#" class="category-card">
-                        <div class="category-icon"><i class="fas fa-camera"></i></div>
-                        <h3>{{ $category->name }}</h3>
-                    </a>
-                @endforeach
-
-                {{-- <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-video"></i></div>
-                    <h3>Video Cameras</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-solar-panel"></i></div>
-                    <h3>Mirrorless</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-circle"></i></div>
-                    <h3>Lenses</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-lightbulb"></i></div>
-                    <h3>Lighting</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-grip-lines"></i></div>
-                    <h3>Tripods</h3>
-                </a> --}}
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Products Section -->
-    <section id="featured" class="featured-products">
-        <div class="container">
-            <div class="section-header">
-                <h2>Featured Products</h2>
-                <p>Our best-selling professional cameras</p>
-            </div>
-
+        <!-- Related Products Section -->
+        <div class="related-products">
+            <h2>Related Products</h2>
             <div class="products-grid">
-                @foreach ($products as $product)
+                @foreach ($relatedProducts as $relatedProduct)
                     <div class="product-card">
-                        <div class="product-badge">New</div>
+                        @if ($relatedProduct->created_at->diffInDays(now()) < 10)
+                            <div class="product-badge">New</div>
+                        @elseif($relatedProduct->sale_price && $relatedProduct->sale_price < $relatedProduct->price)
+                            <div class="product-badge sale">Sale</div>
+                        @endif
+
                         <div class="product-image">
-                            <img src="{{ $product->image }}" alt="{{ $product->name }}">
+                            <img src="{{ $relatedProduct->image }}" alt="{{ $relatedProduct->name }}">
                             <div class="product-actions">
                                 <button class="action-btn"><i class="fas fa-heart"></i></button>
                                 <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
                                     @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <input type="hidden" name="product_id" value="{{ $relatedProduct->id }}">
 
                                     <input type="hidden" name="quantity" value="1" min="1"
-                                        max="{{ $product->stock }}" class="quantity-input">
-                                    @if ($product->stock > 0)
+                                        max="{{ $relatedProduct->stock }}" class="quantity-input">
+                                    @if ($relatedProduct->stock > 0)
                                         <button type="submit"
-                                            class="action-btn {{ $product->stock <= 0 ? 'disabled' : '' }}"
-                                            {{ $product->stock <= 0 ? 'disabled' : '' }}>
+                                            class="action-btn {{ $relatedProduct->stock <= 0 ? 'disabled' : '' }}"
+                                            {{ $relatedProduct->stock <= 0 ? 'disabled' : '' }}>
                                             <i class="fas fa-shopping-cart"></i>
                                         </button>
                                     @endif
 
-                                </form> <a href="{{ route('products.show', $product->id) }}" class="action-btn"><i
+                                </form>
+                                <a href="{{ route('products.show', $relatedProduct->id) }}" class="action-btn"><i
                                         class="fas fa-eye"></i></a>
                             </div>
                         </div>
                         <div class="product-info">
-                            <div class="product-category">{{ $product->subcategory->category->name }}</div>
-                            <h3 class="product-title">{{ $product->name }}</h3>
+                            <div class="product-category">
+                                {{ $relatedProduct->subcategory->category->name }} -
+                                {{ $relatedProduct->subcategory->name }}
+                            </div>
+                            <h3 class="product-title">{{ $relatedProduct->name }}</h3>
                             <div class="product-rating">
-                                {{-- <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i> --}}
-                                {{-- <i class="fas fa-star-half-alt"></i> --}}
-                                <span>Stock ({{ $product->stock }}) </span>
+                                <span
+                                    class="stock-status {{ $relatedProduct->stock > 0 ? 'in-stock' : 'out-of-stock' }}">
+                                    <i
+                                        class="fas {{ $relatedProduct->stock > 0 ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
+                                    {{ $relatedProduct->stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                                    ({{ $relatedProduct->stock }})
+                                </span>
                             </div>
                             <div class="product-price">
-                                <span class="current-price">${{ $product->price }}</span>
+                                @if ($relatedProduct->sale_price && $relatedProduct->sale_price < $relatedProduct->price)
+                                    <span class="old-price">${{ $relatedProduct->price }}</span>
+                                    <span class="current-price">${{ $relatedProduct->sale_price }}</span>
+                                @else
+                                    <span class="current-price">${{ $relatedProduct->price }}</span>
+                                @endif
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
-
-            <div class="view-all">
-                <a href="{{ route('products.all') }}" class="btn btn-outline">View All Products</a>
-            </div>
+            {{ $relatedProducts->links() }}
         </div>
-    </section>
+    </div>
 
-    <!-- Brand Banner -->
-    <section class="brand-banner">
-        <div class="container">
-            <div class="brands-wrapper">
-                <div class="brand">
-                    <img src="https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/canon-512.png"
-                        width="100px" alt="Canon">
-                </div>
-                <div class="brand">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Nikon_Logo.svg/1200px-Nikon_Logo.svg.png"
-                        width="100px" alt="Nikon">
-                </div>
-                <div class="brand">
-                    <img src="https://www.avc-group.com/assets/manufacturers/Sony/Sony-Logo.png" width="100px"
-                        alt="Sony">
-                </div>
-                <div class="brand">
-                    <img src="https://images.seeklogo.com/logo-png/5/1/fujifilm-new-logo-png_seeklogo-58165.png?v=1956249132038839752"
-                        width="100px" alt="Fujifilm">
-                </div>
-                <div class="brand">
-                    <img src="https://cdn.freebiesupply.com/logos/large/2x/panasonic-logo-png-transparent.png"
-                        width="100px" alt="Panasonic">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Special Offer -->
-    <section class="special-offer">
-        <div class="container">
-            <div class="offer-content">
-                <div class="offer-text">
-                    <span class="offer-label">Special Deal</span>
-                    <h2>Professional Photography Bundle</h2>
-                    <p>Get our premium camera with 3 lenses, tripod, and carrying case.</p>
-                    <ul class="offer-features">
-                        <li><i class="fas fa-check"></i> 45.7MP Full-Frame Sensor</li>
-                        <li><i class="fas fa-check"></i> 4K Ultra HD Video</li>
-                        <li><i class="fas fa-check"></i> 2-Year Extended Warranty</li>
-                        <li><i class="fas fa-check"></i> Free Photography Course</li>
-                    </ul>
-                    <div class="price-box">
-                        <div class="price">
-                            <span class="current">$2,399</span>
-                            <span class="old">$3,299</span>
-                        </div>
-                        <div class="timer">
-                            <div class="time-unit">
-                                <span class="number">2</span>
-                                <span class="label">Days</span>
-                            </div>
-                            <div class="time-unit">
-                                <span class="number">08</span>
-                                <span class="label">Hours</span>
-                            </div>
-                            <div class="time-unit">
-                                <span class="number">43</span>
-                                <span class="label">Mins</span>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#" class="btn btn-primary">Shop Now</a>
-                </div>
-                <div class="offer-image">
-                    <img src="https://filmcamerastore.co.uk/cdn/shop/files/zenit-122-50th-anniversary-kmz-special-edition-35mm-film-camera-with-58mm-helios-f1-8-lens--3.png?v=1689277143&width=1406"
-                        alt="Special Camera Offer">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2>What Our Customers Say</h2>
-                <p>Real reviews from professional photographers</p>
-            </div>
-
-            <div class="testimonials-slider">
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"The ProMaster X800 completely changed my photography game. The image quality is outstanding,
-                            and the build quality is exceptional."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="https://www.shutterstock.com/image-photo/handsome-happy-african-american-bearded-600nw-2460702995.jpg"
-                                alt="User Avatar">
-                        </div>
-                        <div class="author-info">
-                            <h4>Michael Roberts</h4>
-                            <span>Wildlife Photographer</span>
-                        </div>
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"The customer service at CameraHub is exceptional. They helped me find the perfect setup for
-                            my studio and offered great advice."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="https://www.shutterstock.com/image-photo/handsome-happy-african-american-bearded-600nw-2460702995.jpg"
-                                alt="User Avatar">
-                        </div>
-                        <div class="author-info">
-                            <h4>Samantha Lee</h4>
-                            <span>Portrait Photographer</span>
-                        </div>
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Blog Posts -->
-    <section class="blog-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Photography Tips & News</h2>
-                <p>Learn from experts and stay updated with the latest trends</p>
-            </div>
-
-            <div class="blog-grid">
-                <article class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://d3c0aoh0dus5lw.cloudfront.net/WP/wp-content/uploads/2017/11/cjasonbradley_170902_26266-864x577.jpg"
-                            alt="Photography Tips">
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> Feb 20, 2025</span>
-                            <span><i class="far fa-user"></i> Admin</span>
-                        </div>
-                        <h3><a href="#">10 Essential Camera Settings for Night Photography</a></h3>
-                        <p>Learn how to capture stunning night scenes with the right camera settings and equipment.</p>
-                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://media.greatbigphotographyworld.com/wp-content/uploads/2022/04/photographer-holding-a-nikon-camera.jpg"
-                            alt="Photography Tips">
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> Feb 18, 2025</span>
-                            <span><i class="far fa-user"></i> Admin</span>
-                        </div>
-                        <h3><a href="#">Comparison: Top 5 Professional Cameras of 2025</a></h3>
-                        <p>We compare the latest professional cameras to help you find the perfect tool for your
-                            photography needs.</p>
-                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://cdn.shopify.com/s/files/1/0070/7032/files/photographer.jpg?v=1710541843"
-                            alt="Photography Tips">
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> Feb 15, 2025</span>
-                            <span><i class="far fa-user"></i> Admin</span>
-                        </div>
-                        <h3><a href="#">Essential Lens Guide for Portrait Photography</a></h3>
-                        <p>Discover which lenses will help you capture stunning portraits with beautiful bokeh effects.
-                        </p>
-                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </section>
 
     <!-- Newsletter -->
     <section class="newsletter">
@@ -1555,9 +1412,6 @@
 
     <!-- Back to Top Button -->
     <a href="#" class="back-to-top"><i class="fas fa-chevron-up"></i></a>
-
-    <!-- JavaScript -->
-    <script src="{{ asset('js/camera-store.js') }}"></script>
 </body>
 
 </html>

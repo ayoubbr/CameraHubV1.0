@@ -1,16 +1,3 @@
-{{-- @if (Route::has('login'))
-            <div class="fixed top-0 right-0 p-6 sm-block">
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 dark-text-gray-500 underline">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark-text-gray-500 underline">Log in</a>
-
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="text-sm text-gray-700 dark-text-gray-500 underline ml-4">Register</a>
-                    @endif
-                @endauth
-            </div>
-        @endif --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -19,18 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Professional cameras and photography equipment">
 
-    <title>CameraHub - Professional Photography Equipment</title>
+    <title>CameraHub - All Products</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
         /* ======= Base Styles ======= */
@@ -1088,8 +1072,535 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Shopping Cart Styles */
+
+        /* Container and general styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Breadcrumbs (same as product details) */
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .breadcrumbs a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumbs a:hover {
+            color: #3490dc;
+        }
+
+        .breadcrumbs span {
+            margin: 0 10px;
+            color: #ccc;
+        }
+
+        .breadcrumbs .current {
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 30px 0;
+            color: #333;
+        }
+
+        /* Alert Messages */
+        .alert-message {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-message i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .alert-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Cart Layout */
+        .cart-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .cart-items {
+            flex: 1;
+            min-width: 60%;
+        }
+
+        .cart-summary {
+            flex: 0 0 30%;
+            min-width: 300px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            align-self: flex-start;
+            position: sticky;
+            top: 20px;
+        }
+
+        /* Cart Header */
+        .cart-header {
+            display: flex;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid #eee;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Cart Item */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 15px;
+            border: 1px solid #eee;
+            border-top: none;
+            transition: background-color 0.2s;
+        }
+
+        .cart-item:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+
+        .cart-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Cart Columns */
+        .cart-column {
+            padding: 0 10px;
+        }
+
+        .product-col {
+            flex: 3;
+            min-width: 0;
+        }
+
+        .price-col {
+            flex: 1;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .quantity-col {
+            flex: 1;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .subtotal-col {
+            flex: 1;
+            text-align: center;
+            min-width: 100px;
+            font-weight: 600;
+        }
+
+        .action-col {
+            flex: 0 0 50px;
+            text-align: center;
+        }
+
+        /* Product in Cart */
+        .product-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-right: 15px;
+            border: 1px solid #eee;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-details {
+            min-width: 0;
+        }
+
+        .product-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 0 5px;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 250px;
+        }
+
+        .product-category {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Price Display */
+        .current-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #3490dc;
+        }
+
+        .old-price {
+            font-size: 14px;
+            color: #999;
+            text-decoration: line-through;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .subtotal-price {
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Quantity Control */
+        .cart-quantity {
+            margin: 0 auto;
+            max-width: 120px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 36px;
+            background-color: #f8f9fa;
+            border: none;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn:hover {
+            background-color: #e9ecef;
+        }
+
+        .quantity-input {
+            width: 50px;
+            height: 36px;
+            text-align: center;
+            border: none;
+            border-left: 1px solid #eee;
+            border-right: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        /* Remove Button */
+        .remove-btn {
+            width: 36px;
+            height: 36px;
+            background-color: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .remove-btn:hover {
+            color: #f44336;
+            background-color: #f8d7da;
+        }
+
+        /* Cart Summary */
+        .cart-summary h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 20px;
+            color: #333;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .summary-line.total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .total-price {
+            color: #3490dc;
+            font-size: 22px;
+        }
+
+        .free-badge {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            background-color: #4CAF50;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .shipping-message {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e8f4fd;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #3490dc;
+        }
+
+        .shipping-message i {
+            margin-right: 5px;
+        }
+
+        /* Coupon Form */
+        .coupon-form {
+            display: flex;
+            margin: 25px 0;
+        }
+
+        .coupon-form input {
+            flex: 1;
+            height: 45px;
+            padding: 0 15px;
+            border: 1px solid #eee;
+            border-radius: 4px 0 0 4px;
+            font-size: 14px;
+        }
+
+        .coupon-form input:focus {
+            outline: none;
+            border-color: #3490dc;
+        }
+
+        .apply-coupon {
+            height: 45px;
+            padding: 0 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .apply-coupon:hover {
+            background-color: #5a6268;
+        }
+
+        /* Checkout Actions */
+        .checkout-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #3490dc;
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .checkout-btn:hover {
+            background-color: #2779bd;
+        }
+
+        .continue-shopping {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: transparent;
+            color: #333;
+            text-align: center;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .continue-shopping:hover {
+            background-color: #f8f9fa;
+            border-color: #ddd;
+        }
+
+        /* Empty Cart */
+        .empty-cart {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .empty-cart-icon {
+            font-size: 60px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .empty-cart p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .continue-shopping-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #3490dc;
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .continue-shopping-btn:hover {
+            background-color: #2779bd;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .cart-content {
+                flex-direction: column;
+            }
+
+            .cart-summary {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cart-header {
+                display: none;
+            }
+
+            .cart-item {
+                flex-wrap: wrap;
+                position: relative;
+                padding-bottom: 30px;
+            }
+
+            .product-col {
+                flex: 0 0 100%;
+                margin-bottom: 15px;
+            }
+
+            .price-col,
+            .quantity-col,
+            .subtotal-col {
+                flex: 1;
+                text-align: center;
+            }
+
+            .action-col {
+                position: absolute;
+                top: 20px;
+                right: 15px;
+            }
+
+            .product-title {
+                max-width: calc(100% - 40px);
+            }
+        }
+
+        @media (max-width: 576px) {
+
+            .price-col,
+            .quantity-col,
+            .subtotal-col {
+                flex: 0 0 100%;
+                margin-bottom: 15px;
+                display: flex;
+                justify-content: space-between;
+                padding: 0;
+            }
+
+            .price-col::before {
+                content: 'Price:';
+                font-weight: 500;
+            }
+
+            .quantity-col::before {
+                content: 'Quantity:';
+                font-weight: 500;
+            }
+
+            .subtotal-col::before {
+                content: 'Subtotal:';
+                font-weight: 500;
+            }
+
+            .cart-item {
+                padding-bottom: 20px;
+            }
+        }
     </style>
-</head>
 
 <body>
     <!-- Header Section -->
@@ -1104,8 +1615,8 @@
 
                 <nav class="main-nav">
                     <ul>
-                        <li><a href="#" class="active">Home</a></li>
-                        <li><a href="#">Shop</a></li>
+                        <li><a href="{{ url('/') }}">Home</a></li>
+                        <li><a href="{{ route('products.all') }}" class="active">Shop</a></li>
                         <li><a href="#">Brands</a></li>
                         <li><a href="#">Lenses</a></li>
                         <li><a href="#">Accessories</a></li>
@@ -1115,8 +1626,9 @@
 
                 <div class="header-actions">
                     <div class="search-form">
-                        <form action="#" method="GET">
-                            <input type="text" placeholder="Search products..." name="search">
+                        <form action="{{ route('products.search') }}" method="GET">
+                            <input type="text" placeholder="Search products..." name="search"
+                                value="{{ request('search') }}">
                             <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
@@ -1130,7 +1642,7 @@
                             @endauth
                         @endif
 
-                        <a href="{{ route('cart') }}" class="cart-link">
+                        <a href="#" class="cart-link">
                             <i class="fas fa-shopping-cart"></i>
                             <span class="cart-count">{{ $cart_count }}</span>
                         </a>
@@ -1143,345 +1655,189 @@
             </div>
         </div>
     </header>
-    <x-error-message />
-    <x-success-message />
-    <!-- Hero Section -->
-    <section class="hero-section">
+
+    <!-- Page Title -->
+    {{-- <section class="page-title-client">
         <div class="container">
-            
-            <div class="hero-content">
-                <h2>Professional Cameras for Every Photographer</h2>
-                <p>Discover the perfect equipment to capture your vision with unparalleled clarity and precision.</p>
-                <div class="hero-buttons">
-                    <a href="#featured" class="btn btn-primary">Shop Now</a>
-                    <a href="#" class="btn btn-outline">Learn More</a>
+            <h1>All Products</h1>
+        </div>
+    </section> --}}
+    <div class="container">
+        <div class="breadcrumbs">
+            <a href="">Home</a>
+            <span>/</span>
+            <a href="{{ route('products.all') }}">Products</a>
+            <span>/</span>
+            <span class="current">Shopping Cart</span>
+        </div>
+
+        <div class="cart-page">
+            <h1 class="page-title">Shopping Cart</h1>
+
+            @if (session('message'))
+                <div class="alert-message success">
+                    <i class="fas fa-check-circle"></i>
+                    {{ session('message') }}
                 </div>
-            </div>
-        </div>
-    </section>
+            @endif
 
-    <!-- Categories Section -->
-    <section class="categories-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Browse Categories</h2>
-                <p>Find exactly what you need for your next shoot</p>
-            </div>
+            @if (session('error'))
+                <div class="alert-message error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ session('error') }}
+                </div>
+            @endif
 
-            <div class="categories-grid">
-                @foreach ($categories as $category)
-                    <a href="#" class="category-card">
-                        <div class="category-icon"><i class="fas fa-camera"></i></div>
-                        <h3>{{ $category->name }}</h3>
-                    </a>
-                @endforeach
+            @if (isset($cart) && count($cart) > 0)
+                <div class="cart-content">
+                    <div class="cart-items">
+                        <div class="cart-header">
+                            <div class="cart-column product-col">Product</div>
+                            <div class="cart-column price-col">Price</div>
+                            <div class="cart-column quantity-col">Quantity</div>
+                            <div class="cart-column subtotal-col">Subtotal</div>
+                            <div class="cart-column action-col"></div>
+                        </div>
 
-                {{-- <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-video"></i></div>
-                    <h3>Video Cameras</h3>
-                </a>
+                        @foreach ($cart as $id => $details)
+                            <div class="cart-item" data-id="{{ $id }}">
+                                <div class="cart-column product-col">
+                                    <div class="product-info">
+                                        <div class="product-image">
+                                            <img src="{{ $details['image'] ?? asset('images/placeholder.jpg') }}"
+                                                alt="{{ $details['name'] }}">
+                                        </div>
+                                        <div class="product-details">
+                                            <h4 class="product-title">{{ $details['name'] }}</h4>
+                                            @if (isset($details['subcategory']))
+                                                <div class="product-category">{{ $details['subcategory'] }}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
 
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-solar-panel"></i></div>
-                    <h3>Mirrorless</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-circle"></i></div>
-                    <h3>Lenses</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-lightbulb"></i></div>
-                    <h3>Lighting</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-grip-lines"></i></div>
-                    <h3>Tripods</h3>
-                </a> --}}
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Products Section -->
-    <section id="featured" class="featured-products">
-        <div class="container">
-            <div class="section-header">
-                <h2>Featured Products</h2>
-                <p>Our best-selling professional cameras</p>
-            </div>
-
-            <div class="products-grid">
-                @foreach ($products as $product)
-                    <div class="product-card">
-                        <div class="product-badge">New</div>
-                        <div class="product-image">
-                            <img src="{{ $product->image }}" alt="{{ $product->name }}">
-                            <div class="product-actions">
-                                <button class="action-btn"><i class="fas fa-heart"></i></button>
-                                <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-
-                                    <input type="hidden" name="quantity" value="1" min="1"
-                                        max="{{ $product->stock }}" class="quantity-input">
-                                    @if ($product->stock > 0)
-                                        <button type="submit"
-                                            class="action-btn {{ $product->stock <= 0 ? 'disabled' : '' }}"
-                                            {{ $product->stock <= 0 ? 'disabled' : '' }}>
-                                            <i class="fas fa-shopping-cart"></i>
-                                        </button>
+                                <div class="cart-column price-col">
+                                    @if (isset($details['sale_price']) && $details['sale_price'] < $details['price'])
+                                        <span class="old-price">${{ $details['price'] }}</span>
+                                        <span class="current-price">${{ $details['sale_price'] }}</span>
+                                    @else
+                                        <span class="current-price">${{ $details['price'] }}</span>
                                     @endif
+                                </div>
 
-                                </form> <a href="{{ route('products.show', $product->id) }}" class="action-btn"><i
-                                        class="fas fa-eye"></i></a>
+                                <div class="cart-column quantity-col">
+                                    <form action="{{ route('cart.update') }}" method="POST" class="update-cart-form">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $id }}">
+                                        <div class="quantity-control cart-quantity">
+                                            <button type="button" class="quantity-btn minus"
+                                                data-id="{{ $id }}"><i class="fas fa-minus"></i></button>
+                                            <input type="number" name="quantity"
+                                                value="{{ $details['quantity'] ?? 1 }}" min="1"
+                                                max="{{ $details['stock'] ?? 99 }}" class="quantity-input"
+                                                data-id="{{ $id }}">
+                                            <button type="button" class="quantity-btn plus"
+                                                data-id="{{ $id }}"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="cart-column subtotal-col">
+                                    @php
+                                        $price =
+                                            isset($details['sale_price']) && $details['sale_price'] < $details['price']
+                                                ? $details['sale_price']
+                                                : $details['price'];
+                                        $subtotal = $price * ($details['quantity'] ?? 1);
+                                    @endphp
+                                    <span class="subtotal-price">${{ number_format($subtotal, 2) }}</span>
+                                </div>
+
+                                <div class="cart-column action-col">
+                                    <form action="{{ route('cart.remove') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $id }}">
+                                        <button type="submit" class="remove-btn"><i
+                                                class="fas fa-trash-alt"></i></button>
+                                    </form>
+                                </div>
                             </div>
+                        @endforeach
+                    </div>
+
+                    <div class="cart-summary">
+                        <h3>Order Summary</h3>
+
+                        <div class="summary-line">
+                            <span>Subtotal</span>
+                            <span class="summary-price">
+                                @php
+                                    $subtotal = 0;
+                                    foreach ($cart as $details) {
+                                        $price =
+                                            isset($details['sale_price']) && $details['sale_price'] < $details['price']
+                                                ? $details['sale_price']
+                                                : $details['price'];
+                                        $subtotal += $price * ($details['quantity'] ?? 1);
+                                    }
+                                @endphp
+                                ${{ number_format($subtotal, 2) }}
+                            </span>
                         </div>
-                        <div class="product-info">
-                            <div class="product-category">{{ $product->subcategory->category->name }}</div>
-                            <h3 class="product-title">{{ $product->name }}</h3>
-                            <div class="product-rating">
-                                {{-- <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i> --}}
-                                {{-- <i class="fas fa-star-half-alt"></i> --}}
-                                <span>Stock ({{ $product->stock }}) </span>
+
+                        <div class="summary-line">
+                            <span>Shipping Fee</span>
+                            <span class="summary-price">
+                                @php
+                                    $shipping = $subtotal > 100 ? 0 : 10;
+                                @endphp
+                                ${{ number_format($shipping, 2) }}
+                                @if ($shipping == 0)
+                                    <span class="free-badge">FREE</span>
+                                @endif
+                            </span>
+                        </div>
+
+                        @if ($subtotal > 100 && $shipping == 0)
+                            <div class="shipping-message">
+                                <i class="fas fa-truck"></i> Free shipping applied!
                             </div>
-                            <div class="product-price">
-                                <span class="current-price">${{ $product->price }}</span>
+                        @elseif($subtotal < 100)
+                            <div class="shipping-message">
+                                <i class="fas fa-info-circle"></i> Add ${{ number_format(100 - $subtotal, 2) }} more
+                                to
+                                get free shipping!
                             </div>
+                        @endif
+
+                        <div class="summary-line total">
+                            <span>Total</span>
+                            <span class="total-price">${{ number_format($subtotal + $shipping, 2) }}</span>
+                        </div>
+
+                        <div class="coupon-form">
+                            <input type="text" name="coupon_code" placeholder="Coupon Code">
+                            <button type="button" class="apply-coupon">Apply</button>
+                        </div>
+
+                        <div class="checkout-actions">
+                            <a href="{{ route('checkout') }}" class="checkout-btn">Proceed to Checkout</a>
+                            <a href="{{ route('products.all') }}" class="continue-shopping">Continue Shopping</a>
                         </div>
                     </div>
-                @endforeach
-            </div>
-
-            <div class="view-all">
-                <a href="{{ route('products.all') }}" class="btn btn-outline">View All Products</a>
-            </div>
+                </div>
+            @else
+                <div class="empty-cart">
+                    <div class="empty-cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h2>Your cart is empty</h2>
+                    <p>Looks like you haven't added any products to your cart yet.</p>
+                    <a href="{{ route('products.all') }}" class="continue-shopping-btn">Start Shopping</a>
+                </div>
+            @endif
         </div>
-    </section>
-
-    <!-- Brand Banner -->
-    <section class="brand-banner">
-        <div class="container">
-            <div class="brands-wrapper">
-                <div class="brand">
-                    <img src="https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/canon-512.png"
-                        width="100px" alt="Canon">
-                </div>
-                <div class="brand">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Nikon_Logo.svg/1200px-Nikon_Logo.svg.png"
-                        width="100px" alt="Nikon">
-                </div>
-                <div class="brand">
-                    <img src="https://www.avc-group.com/assets/manufacturers/Sony/Sony-Logo.png" width="100px"
-                        alt="Sony">
-                </div>
-                <div class="brand">
-                    <img src="https://images.seeklogo.com/logo-png/5/1/fujifilm-new-logo-png_seeklogo-58165.png?v=1956249132038839752"
-                        width="100px" alt="Fujifilm">
-                </div>
-                <div class="brand">
-                    <img src="https://cdn.freebiesupply.com/logos/large/2x/panasonic-logo-png-transparent.png"
-                        width="100px" alt="Panasonic">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Special Offer -->
-    <section class="special-offer">
-        <div class="container">
-            <div class="offer-content">
-                <div class="offer-text">
-                    <span class="offer-label">Special Deal</span>
-                    <h2>Professional Photography Bundle</h2>
-                    <p>Get our premium camera with 3 lenses, tripod, and carrying case.</p>
-                    <ul class="offer-features">
-                        <li><i class="fas fa-check"></i> 45.7MP Full-Frame Sensor</li>
-                        <li><i class="fas fa-check"></i> 4K Ultra HD Video</li>
-                        <li><i class="fas fa-check"></i> 2-Year Extended Warranty</li>
-                        <li><i class="fas fa-check"></i> Free Photography Course</li>
-                    </ul>
-                    <div class="price-box">
-                        <div class="price">
-                            <span class="current">$2,399</span>
-                            <span class="old">$3,299</span>
-                        </div>
-                        <div class="timer">
-                            <div class="time-unit">
-                                <span class="number">2</span>
-                                <span class="label">Days</span>
-                            </div>
-                            <div class="time-unit">
-                                <span class="number">08</span>
-                                <span class="label">Hours</span>
-                            </div>
-                            <div class="time-unit">
-                                <span class="number">43</span>
-                                <span class="label">Mins</span>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#" class="btn btn-primary">Shop Now</a>
-                </div>
-                <div class="offer-image">
-                    <img src="https://filmcamerastore.co.uk/cdn/shop/files/zenit-122-50th-anniversary-kmz-special-edition-35mm-film-camera-with-58mm-helios-f1-8-lens--3.png?v=1689277143&width=1406"
-                        alt="Special Camera Offer">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2>What Our Customers Say</h2>
-                <p>Real reviews from professional photographers</p>
-            </div>
-
-            <div class="testimonials-slider">
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"The ProMaster X800 completely changed my photography game. The image quality is outstanding,
-                            and the build quality is exceptional."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="https://www.shutterstock.com/image-photo/handsome-happy-african-american-bearded-600nw-2460702995.jpg"
-                                alt="User Avatar">
-                        </div>
-                        <div class="author-info">
-                            <h4>Michael Roberts</h4>
-                            <span>Wildlife Photographer</span>
-                        </div>
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"The customer service at CameraHub is exceptional. They helped me find the perfect setup for
-                            my studio and offered great advice."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="https://www.shutterstock.com/image-photo/handsome-happy-african-american-bearded-600nw-2460702995.jpg"
-                                alt="User Avatar">
-                        </div>
-                        <div class="author-info">
-                            <h4>Samantha Lee</h4>
-                            <span>Portrait Photographer</span>
-                        </div>
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Blog Posts -->
-    <section class="blog-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Photography Tips & News</h2>
-                <p>Learn from experts and stay updated with the latest trends</p>
-            </div>
-
-            <div class="blog-grid">
-                <article class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://d3c0aoh0dus5lw.cloudfront.net/WP/wp-content/uploads/2017/11/cjasonbradley_170902_26266-864x577.jpg"
-                            alt="Photography Tips">
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> Feb 20, 2025</span>
-                            <span><i class="far fa-user"></i> Admin</span>
-                        </div>
-                        <h3><a href="#">10 Essential Camera Settings for Night Photography</a></h3>
-                        <p>Learn how to capture stunning night scenes with the right camera settings and equipment.</p>
-                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://media.greatbigphotographyworld.com/wp-content/uploads/2022/04/photographer-holding-a-nikon-camera.jpg"
-                            alt="Photography Tips">
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> Feb 18, 2025</span>
-                            <span><i class="far fa-user"></i> Admin</span>
-                        </div>
-                        <h3><a href="#">Comparison: Top 5 Professional Cameras of 2025</a></h3>
-                        <p>We compare the latest professional cameras to help you find the perfect tool for your
-                            photography needs.</p>
-                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://cdn.shopify.com/s/files/1/0070/7032/files/photographer.jpg?v=1710541843"
-                            alt="Photography Tips">
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> Feb 15, 2025</span>
-                            <span><i class="far fa-user"></i> Admin</span>
-                        </div>
-                        <h3><a href="#">Essential Lens Guide for Portrait Photography</a></h3>
-                        <p>Discover which lenses will help you capture stunning portraits with beautiful bokeh effects.
-                        </p>
-                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- Newsletter -->
-    <section class="newsletter">
-        <div class="container">
-            <div class="newsletter-wrapper">
-                <div class="newsletter-content">
-                    <h2>Subscribe to Our Newsletter</h2>
-                    <p>Get exclusive offers, photography tips, and new product announcements.</p>
-                </div>
-                <form class="newsletter-form">
-                    <div class="form-group">
-                        <input type="email" placeholder="Your email address" required>
-                        <button type="submit" class="btn btn-primary">Subscribe</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
+    </div>
     <footer class="site-footer">
         <div class="container">
             <div class="footer-top">
@@ -1555,9 +1911,77 @@
 
     <!-- Back to Top Button -->
     <a href="#" class="back-to-top"><i class="fas fa-chevron-up"></i></a>
+    @section('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Quantity control
+                const minusBtns = document.querySelectorAll('.quantity-btn.minus');
+                const plusBtns = document.querySelectorAll('.quantity-btn.plus');
 
-    <!-- JavaScript -->
-    <script src="{{ asset('js/camera-store.js') }}"></script>
+                minusBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const inputField = document.querySelector(`.quantity-input[data-id="${id}"]`);
+                        let currentValue = parseInt(inputField.value);
+
+                        if (currentValue > 1) {
+                            inputField.value = currentValue - 1;
+                            updateCart(id, currentValue - 1);
+                        }
+                    });
+                });
+
+                plusBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const inputField = document.querySelector(`.quantity-input[data-id="${id}"]`);
+                        let currentValue = parseInt(inputField.value);
+                        const maxQuantity = parseInt(inputField.getAttribute('max'));
+
+                        if (currentValue < maxQuantity) {
+                            inputField.value = currentValue + 1;
+                            updateCart(id, currentValue + 1);
+                        }
+                    });
+                });
+
+                // Quantity input change
+                const quantityInputs = document.querySelectorAll('.quantity-input');
+                quantityInputs.forEach(input => {
+                    input.addEventListener('change', function() {
+                        const id = this.getAttribute('data-id');
+                        updateCart(id, this.value);
+                    });
+                });
+
+                // Function to update cart
+                function updateCart(id, quantity) {
+                    // Send AJAX request to update cart
+                    fetch('{{ route('cart.update') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                product_id: id,
+                                quantity: quantity
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Reload the page to show updated cart
+                            if (data.success) {
+                                window.location.reload();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error updating cart:', error);
+                        });
+                }
+            });
+        </script>
+    @endsection
 </body>
 
 </html>
