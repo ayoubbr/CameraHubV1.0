@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubCategoryController;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,10 @@ Route::group(['middleware' => 'auth'], function () {
     
     Route::get('subcategories', [SubCategoryController::class, 'index'])->name('subcategories');
     Route::post('subcategories/store', [SubCategoryController::class, 'store'])->name('subcategories.store');
+
+    
+    Route::get('products', [ProductController::class, 'index'])->name('products');
+    Route::post('products/store', [ProductController::class, 'store'])->name('products.store');
 });
 
 require __DIR__ . '/auth.php';
