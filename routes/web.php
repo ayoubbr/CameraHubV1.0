@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -34,7 +35,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
+
     Route::resource('users', App\Http\Controllers\UserController::class);
+    // Route::resource('categories', App\Http\Controllers\CategoryController::class);
+    Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
+    Route::post('categories/store', [CategoryController::class, 'store'])->name('categories.store');
 });
 
 require __DIR__ . '/auth.php';

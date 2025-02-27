@@ -1,3 +1,4 @@
+@import url(https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap);
 /* Basic styles */
 body {
     font-family: 'Nunito', sans-serif;
@@ -75,9 +76,9 @@ body {
     gap: 1.5rem;
 }
 
-.form-group {
+/* .form-group {
     margin-bottom: 1rem;
-}
+} */
 
 .form-control {
     display: block;
@@ -167,6 +168,8 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Poppins", serif;
+    ;
 }
 
 /* Additional styling to maintain overall look and feel */
@@ -1157,9 +1160,9 @@ body {
 }
 
 /* Form groups */
-.form-group {
+/* .form-group {
     margin-bottom: 0.5rem;
-}
+} */
 
 /* Form control (already defined in previous artifacts) */
 .form-control {
@@ -1195,13 +1198,13 @@ body {
 }
 
 /* Form groups - adding space between form elements */
-.form-group {
+/* .form-group {
     margin-bottom: 1rem;
-}
+} */
 
-.form-group+.form-group {
+/* .form-group+.form-group {
     margin-top: 1rem;
-}
+} */
 
 /* Checkbox group */
 .form-checkbox-group {
@@ -1288,9 +1291,9 @@ body {
 }
 
 /* Form elements */
-.form-group {
+/* .form-group {
     margin-bottom: 16px;
-}
+} */
 
 .form-label {
     display: block;
@@ -1391,6 +1394,21 @@ body {
     align-items: center;
     justify-content: flex-end;
     margin-top: 16px;
-  }
+}
 
-  
+/* ++++++++++++++++++ CATEGORY ++++++++++++++++++ */
+/* .form-flex{
+    display: flex;
+    flex-direction: column;
+} */
+.form-grid-category {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+.form-column-category {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 0.8rem;
+}
