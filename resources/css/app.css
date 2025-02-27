@@ -1,5 +1,10 @@
 /* Basic styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 body {
     font-family: 'Nunito', sans-serif;
     color: #333;
@@ -1417,7 +1422,7 @@ body {
 /* products-page.css */
 
 /* Page Title Styling */
-.page-title-client{
+.page-title-client {
     background-color: #f8f9fa;
     padding: 20px 0;
     text-align: center;
@@ -1759,7 +1764,7 @@ body {
     display: inline-block;
 }
 
-.pagination li a, 
+.pagination li a,
 .pagination li span {
     display: flex;
     align-items: center;
@@ -1801,12 +1806,12 @@ body {
     .products-layout {
         flex-direction: column;
     }
-    
+
     .products-sidebar {
         width: 100%;
         margin-bottom: 30px;
     }
-    
+
     .filter-section {
         padding: 15px;
     }
@@ -1816,18 +1821,118 @@ body {
     .products-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .products-header {
         flex-direction: column;
         gap: 15px;
         align-items: flex-start;
     }
-    
+
     .page-title {
         padding: 30px 0;
     }
-    
+
     .product-image {
         height: 180px;
+    }
+}
+
+/* Laravel Pagination Styling */
+.pagination-wrapper {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pagination li {
+    display: inline-flex;
+}
+
+.pagination li a,
+.pagination li span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-right: none;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.pagination li:last-child a,
+.pagination li:last-child span {
+    border-right: 1px solid #eee;
+}
+
+.pagination li.active span {
+    background-color: #3490dc;
+    color: white;
+    border-color: #3490dc;
+    font-weight: 600;
+    box-shadow: 0 0 5px rgba(52, 144, 220, 0.5);
+}
+
+.pagination li a:hover {
+    background-color: #f8f9fa;
+    color: #3490dc;
+}
+
+.pagination li.disabled span {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Previous/Next Buttons */
+.pagination li:first-child a,
+.pagination li:first-child span,
+.pagination li:last-child a,
+.pagination li:last-child span {
+    font-size: 12px;
+}
+
+/* Arrow icons - assuming FontAwesome */
+.pagination li:first-child a::before,
+.pagination li:first-child span::before {
+    content: "«";
+    margin-right: 4px;
+}
+
+.pagination li:last-child a::after,
+.pagination li:last-child span::after {
+    content: "»";
+    margin-left: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+
+    .pagination li a,
+    .pagination li span {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 8px;
+        font-size: 13px;
+    }
+
+    /* Hide some page numbers on mobile */
+    .pagination li:not(.active):not(:first-child):not(:last-child):not(:nth-child(2)):not(:nth-last-child(2)) {
+        display: none;
     }
 }

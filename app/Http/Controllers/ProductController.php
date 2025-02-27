@@ -13,7 +13,7 @@ class ProductController extends Controller
     {
         $subCategories = SubCategory::all();
         $categories = Category::all();
-        $products = Product::all();
+        $products = Product::paginate(6);
 
         return view('products.all', compact('products', 'subCategories', 'categories'));
     }

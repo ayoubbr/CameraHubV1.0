@@ -1109,7 +1109,7 @@
                     <div class="user-actions">
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ url('/dashboard') }}" class="account-link"><i class="fas fa-user"></i></a>
+                                <a href="{{ route('dashboard') }}" class="account-link"><i class="fas fa-user"></i></a>
                             @else
                                 <a href="{{ route('login') }}" class="account-link"><i class="fas fa-sign-in-alt"></i></a>
                             @endauth
@@ -1179,7 +1179,7 @@
                                 @endif
 
                                 <div class="filter-options">
-                                    @foreach ($subcategories as $subcategory)
+                                    @foreach ($category->subcategories as $subcategory)
                                         @if ($subcategory->category_id == request('category'))
                                             <div class="filter-option">
                                                 <input type="radio" name="subcategory"
@@ -1375,7 +1375,7 @@
                         </div>
 
                         <div class="pagination-wrapper">
-                            {{-- {{ $products->withQueryString()->links() }} --}}
+                            {{ $products->links() }}
                         </div>
                     @endif
                 </div>

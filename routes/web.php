@@ -20,8 +20,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    // $adminRole = Role::where('name', 'admin')->first();
-    // echo $adminRole->description;
     $categories = Category::all();
     $products = Product::paginate(4);
     return view('welcome', compact('categories', 'products'));
@@ -29,6 +27,11 @@ Route::get('/', function () {
 
 Route::get('products', [ProductController::class, 'all'])->name('products.all');
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
+
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard')->middleware('auth');
 
 Route::prefix('admin')->middleware('auth')->group(function () {
 

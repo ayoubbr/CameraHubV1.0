@@ -63,6 +63,9 @@
                                                     Description
                                                 </th>
                                                 <th scope="col" class="table-header-cell">
+                                                    Category
+                                                </th>
+                                                <th scope="col" class="table-header-cell">
                                                     Created time
                                                 </th>
                                                 <th scope="col" class="table-header-cell">
@@ -81,6 +84,9 @@
                                                     </td>
                                                     <td class="table-cell">
                                                         {{ Str::of($subCategory->description)->limit(40) }}
+                                                    </td>
+                                                    <td class="table-cell">
+                                                        {{ $subCategory->category->name }}
                                                     </td>
                                                     <td class="table-cell">
                                                         {{ $subCategory->created_at }}
