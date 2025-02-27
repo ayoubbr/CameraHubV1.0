@@ -4,6 +4,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubCategoryController;
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,13 +22,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     // $adminRole = Role::where('name', 'admin')->first();
     // echo $adminRole->description;
-    return view('welcome');
+    $categories = Category::all();
+    $products = Product::paginate(4);
+    return view('welcome', compact('categories', 'products'));
 });
 
+Route::get('products', [ProductController::class, 'all'])->name('products.all');
+Route::get('/search', [ProductController::class, 'search'])->name('products.search');
 
+Route::prefix('admin')->middleware('auth')->group(function () {
 
-Route::group(['middleware' => 'auth'], function () {
-    
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -36,14 +41,14 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('users', App\Http\Controllers\UserController::class);
     // Route::resource('categories', App\Http\Controllers\CategoryController::class);
-    
+
     Route::get('categories', [CategoryController::class, 'index'])->name('categories');
     Route::post('categories/store', [CategoryController::class, 'store'])->name('categories.store');
-    
+
     Route::get('subcategories', [SubCategoryController::class, 'index'])->name('subcategories');
     Route::post('subcategories/store', [SubCategoryController::class, 'store'])->name('subcategories.store');
 
-    
+
     Route::get('products', [ProductController::class, 'index'])->name('products');
     Route::post('products/store', [ProductController::class, 'store'])->name('products.store');
 });

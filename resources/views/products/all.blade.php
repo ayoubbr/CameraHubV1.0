@@ -1,16 +1,3 @@
-{{-- @if (Route::has('login'))
-            <div class="fixed top-0 right-0 p-6 sm-block">
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 dark-text-gray-500 underline">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark-text-gray-500 underline">Log in</a>
-
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="text-sm text-gray-700 dark-text-gray-500 underline ml-4">Register</a>
-                    @endif
-                @endauth
-            </div>
-        @endif --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -19,19 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Professional cameras and photography equipment">
 
-    <title>CameraHub - Professional Photography Equipment</title>
+    <title>CameraHub - All Products</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- Styles -->
-    <link href="{{ asset('css/camera-store.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
         /* ======= Base Styles ======= */
         :root {
@@ -1104,8 +1088,8 @@
 
                 <nav class="main-nav">
                     <ul>
-                        <li><a href="#" class="active">Home</a></li>
-                        <li><a href="#">Shop</a></li>
+                        <li><a href="{{ url('/') }}">Home</a></li>
+                        <li><a href="{{ route('products.all') }}" class="active">Shop</a></li>
                         <li><a href="#">Brands</a></li>
                         <li><a href="#">Lenses</a></li>
                         <li><a href="#">Accessories</a></li>
@@ -1115,8 +1099,9 @@
 
                 <div class="header-actions">
                     <div class="search-form">
-                        <form action="#" method="GET">
-                            <input type="text" placeholder="Search products..." name="search">
+                        <form action="{{ route('products.search') }}" method="GET">
+                            <input type="text" placeholder="Search products..." name="search"
+                                value="{{ request('search') }}">
                             <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
@@ -1124,7 +1109,7 @@
                     <div class="user-actions">
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ route('dashboard') }}" class="account-link"><i class="fas fa-user"></i></a>
+                                <a href="{{ url('/dashboard') }}" class="account-link"><i class="fas fa-user"></i></a>
                             @else
                                 <a href="{{ route('login') }}" class="account-link"><i class="fas fa-sign-in-alt"></i></a>
                             @endauth
@@ -1144,305 +1129,256 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
+    <!-- Page Title -->
+    <section class="page-title-client">
         <div class="container">
-            <div class="hero-content">
-                <h2>Professional Cameras for Every Photographer</h2>
-                <p>Discover the perfect equipment to capture your vision with unparalleled clarity and precision.</p>
-                <div class="hero-buttons">
-                    <a href="#featured" class="btn btn-primary">Shop Now</a>
-                    <a href="#" class="btn btn-outline">Learn More</a>
-                </div>
-            </div>
+            <h1>All Products</h1>
         </div>
     </section>
 
-    <!-- Categories Section -->
-    <section class="categories-section">
+    <!-- Products Section with Filtering -->
+    <section class="products-section">
         <div class="container">
-            <div class="section-header">
-                <h2>Browse Categories</h2>
-                <p>Find exactly what you need for your next shoot</p>
-            </div>
+            <div class="products-layout">
+                <!-- Sidebar with filters -->
+                <aside class="products-sidebar">
+                    <div class="filter-section">
+                        <h3>Categories</h3>
+                        <form action="{{ route('products.all') }}" method="GET" id="category-filter">
+                            @if (request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            @endif
 
-            <div class="categories-grid">
-                @foreach ($categories as $category)
-                    <a href="#" class="category-card">
-                        <div class="category-icon"><i class="fas fa-camera"></i></div>
-                        <h3>{{ $category->name }}</h3>
-                    </a>
-                @endforeach
-
-                {{-- <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-video"></i></div>
-                    <h3>Video Cameras</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-solar-panel"></i></div>
-                    <h3>Mirrorless</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-circle"></i></div>
-                    <h3>Lenses</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-lightbulb"></i></div>
-                    <h3>Lighting</h3>
-                </a>
-
-                <a href="#" class="category-card">
-                    <div class="category-icon"><i class="fas fa-grip-lines"></i></div>
-                    <h3>Tripods</h3>
-                </a> --}}
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Products Section -->
-    <section id="featured" class="featured-products">
-        <div class="container">
-            <div class="section-header">
-                <h2>Featured Products</h2>
-                <p>Our best-selling professional cameras</p>
-            </div>
-
-            <div class="products-grid">
-                @foreach ($products as $product)
-                    <div class="product-card">
-                        <div class="product-badge">New</div>
-                        <div class="product-image">
-                            <img src="{{ $product->image }}" alt="{{ $product->name }}">
-                            <div class="product-actions">
-                                <button class="action-btn"><i class="fas fa-heart"></i></button>
-                                <button class="action-btn"><i class="fas fa-shopping-cart"></i></button>
-                                <button class="action-btn"><i class="fas fa-eye"></i></button>
+                            <div class="filter-options">
+                                @foreach ($categories as $category)
+                                    <div class="filter-option">
+                                        <input type="radio" name="category" id="cat-{{ $category->id }}"
+                                            value="{{ $category->id }}"
+                                            {{ request('category') == $category->id ? 'checked' : '' }}
+                                            onchange="document.getElementById('category-filter').submit()">
+                                        <label for="cat-{{ $category->id }}">{{ $category->name }}</label>
+                                    </div>
+                                @endforeach
+                                <div class="filter-option">
+                                    <input type="radio" name="category" id="cat-all" value=""
+                                        {{ request('category') == '' ? 'checked' : '' }}
+                                        onchange="document.getElementById('category-filter').submit()">
+                                    <label for="cat-all">All Categories</label>
+                                </div>
                             </div>
+                        </form>
+                    </div>
+
+                    @if (request('category'))
+                        <div class="filter-section">
+                            <h3>Subcategories</h3>
+                            <form action="{{ route('products.all') }}" method="GET" id="subcategory-filter">
+                                <input type="hidden" name="category" value="{{ request('category') }}">
+                                @if (request('search'))
+                                    <input type="hidden" name="search" value="{{ request('search') }}">
+                                @endif
+
+                                <div class="filter-options">
+                                    @foreach ($subcategories as $subcategory)
+                                        @if ($subcategory->category_id == request('category'))
+                                            <div class="filter-option">
+                                                <input type="radio" name="subcategory"
+                                                    id="subcat-{{ $subcategory->id }}" value="{{ $subcategory->id }}"
+                                                    {{ request('subcategory') == $subcategory->id ? 'checked' : '' }}
+                                                    onchange="document.getElementById('subcategory-filter').submit()">
+                                                <label
+                                                    for="subcat-{{ $subcategory->id }}">{{ $subcategory->name }}</label>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                    <div class="filter-option">
+                                        <input type="radio" name="subcategory" id="subcat-all" value=""
+                                            {{ request('subcategory') == '' ? 'checked' : '' }}
+                                            onchange="document.getElementById('subcategory-filter').submit()">
+                                        <label for="subcat-all">All Subcategories</label>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="product-info">
-                            <div class="product-category">{{ $product->subcategory->category->name }}</div>
-                            <h3 class="product-title">{{ $product->name }}</h3>
-                            <div class="product-rating">
-                            {{-- <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i> --}}
-                            {{-- <i class="fas fa-star-half-alt"></i>--}}
-                                <span>Stock ({{ $product->stock }}) </span> 
+                    @endif
+
+                    <div class="filter-section">
+                        <h3>Price Range</h3>
+                        <form action="{{ route('products.all') }}" method="GET" id="price-filter">
+                            @if (request('category'))
+                                <input type="hidden" name="category" value="{{ request('category') }}">
+                            @endif
+                            @if (request('subcategory'))
+                                <input type="hidden" name="subcategory" value="{{ request('subcategory') }}">
+                            @endif
+                            @if (request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            @endif
+
+                            <div class="price-inputs">
+                                <div class="price-input">
+                                    <label for="min_price">Min $</label>
+                                    <input type="number" name="min_price" id="min_price" min="0"
+                                        value="{{ request('min_price', '') }}" placeholder="Min">
+                                </div>
+                                <div class="price-input">
+                                    <label for="max_price">Max $</label>
+                                    <input type="number" name="max_price" id="max_price" min="0"
+                                        value="{{ request('max_price', '') }}" placeholder="Max">
+                                </div>
                             </div>
-                            <div class="product-price">
-                                <span class="current-price">${{ $product->price }}</span>
+                            <button type="submit" class="btn btn-outline btn-filter">Apply Price Filter</button>
+                        </form>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Availability</h3>
+                        <form action="{{ route('products.all') }}" method="GET" id="stock-filter">
+                            @if (request('category'))
+                                <input type="hidden" name="category" value="{{ request('category') }}">
+                            @endif
+                            @if (request('subcategory'))
+                                <input type="hidden" name="subcategory" value="{{ request('subcategory') }}">
+                            @endif
+                            @if (request('min_price'))
+                                <input type="hidden" name="min_price" value="{{ request('min_price') }}">
+                            @endif
+                            @if (request('max_price'))
+                                <input type="hidden" name="max_price" value="{{ request('max_price') }}">
+                            @endif
+                            @if (request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            @endif
+
+                            <div class="filter-options">
+                                <div class="filter-option">
+                                    <input type="radio" name="stock" id="in-stock" value="1"
+                                        {{ request('stock') == '1' ? 'checked' : '' }}
+                                        onchange="document.getElementById('stock-filter').submit()">
+                                    <label for="in-stock">In Stock</label>
+                                </div>
+                                <div class="filter-option">
+                                    <input type="radio" name="stock" id="all-items" value=""
+                                        {{ request('stock') == '' ? 'checked' : '' }}
+                                        onchange="document.getElementById('stock-filter').submit()">
+                                    <label for="all-items">All Items</label>
+                                </div>
                             </div>
+                        </form>
+                    </div>
+
+                    @if (request()->anyFilled(['category', 'subcategory', 'min_price', 'max_price', 'stock', 'search']))
+                        <div class="filter-actions">
+                            <a href="{{ route('products.all') }}" class="btn btn-outline btn-reset">Reset All
+                                Filters</a>
+                        </div>
+                    @endif
+                </aside>
+
+                <!-- Products Grid -->
+                <div class="products-content">
+                    <div class="products-header">
+                        <div class="products-count">
+                            {{-- <p>Showing {{ $products->firstItem() ?? 0 }} - {{ $products->lastItem() ?? 0 }} of --}}
+                            {{-- {{ $products->total() ?? 0 }} products</p> --}}
+                        </div>
+                        <div class="products-sort">
+                            <form action="{{ route('products.all') }}" method="GET" id="sort-form">
+                                @if (request('category'))
+                                    <input type="hidden" name="category" value="{{ request('category') }}">
+                                @endif
+                                @if (request('subcategory'))
+                                    <input type="hidden" name="subcategory" value="{{ request('subcategory') }}">
+                                @endif
+                                @if (request('min_price'))
+                                    <input type="hidden" name="min_price" value="{{ request('min_price') }}">
+                                @endif
+                                @if (request('max_price'))
+                                    <input type="hidden" name="max_price" value="{{ request('max_price') }}">
+                                @endif
+                                @if (request('stock'))
+                                    <input type="hidden" name="stock" value="{{ request('stock') }}">
+                                @endif
+                                @if (request('search'))
+                                    <input type="hidden" name="search" value="{{ request('search') }}">
+                                @endif
+
+                                <label for="sort">Sort By:</label>
+                                <select name="sort" id="sort"
+                                    onchange="document.getElementById('sort-form').submit()">
+                                    <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest
+                                    </option>
+                                    <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>
+                                        Price: Low to High</option>
+                                    <option value="price_high"
+                                        {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low
+                                    </option>
+                                    <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>
+                                        Name: A to Z</option>
+                                    <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>
+                                        Name: Z to A</option>
+                                </select>
+                            </form>
                         </div>
                     </div>
-                @endforeach
-            </div>
 
-            <div class="view-all">
-                <a href="{{route('products.all')}}" class="btn btn-outline">View All Products</a>
-            </div>
-        </div>
-    </section>
+                    @if ($products->isEmpty())
+                        <div class="no-products">
+                            <i class="fas fa-search fa-3x"></i>
+                            <h3>No products found</h3>
+                            <p>Try changing your filters or search terms</p>
+                        </div>
+                    @else
+                        <div class="products-grid">
+                            @foreach ($products as $product)
+                                <div class="product-card">
+                                    @if ($product->created_at->diffInDays(now()) < 30)
+                                        <div class="product-badge">New</div>
+                                    @elseif($product->sale_price && $product->sale_price < $product->price)
+                                        <div class="product-badge sale">Sale</div>
+                                    @endif
 
-    <!-- Brand Banner -->
-    <section class="brand-banner">
-        <div class="container">
-            <div class="brands-wrapper">
-                <div class="brand">
-                    <img src="https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/canon-512.png" width="100px"
-                        alt="Canon">
+                                    <div class="product-image">
+                                        <img src="{{ $product->image }}" alt="{{ $product->name }}">
+                                        <div class="product-actions">
+                                            <button class="action-btn"><i class="fas fa-heart"></i></button>
+                                            <button class="action-btn"><i class="fas fa-shopping-cart"></i></button>
+                                            <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-category">
+                                            {{ $product->subcategory->category->name }} -
+                                            {{ $product->subcategory->name }}
+                                        </div>
+                                        <h3 class="product-title">{{ $product->name }}</h3>
+                                        <div class="product-rating">
+                                            <span
+                                                class="stock-status {{ $product->stock > 0 ? 'in-stock' : 'out-of-stock' }}">
+                                                <i
+                                                    class="fas {{ $product->stock > 0 ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
+                                                {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                                                ({{ $product->stock }})
+                                            </span>
+                                        </div>
+                                        <div class="product-price">
+                                            @if ($product->sale_price && $product->sale_price < $product->price)
+                                                <span class="old-price">${{ $product->price }}</span>
+                                                <span class="current-price">${{ $product->sale_price }}</span>
+                                            @else
+                                                <span class="current-price">${{ $product->price }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="pagination-wrapper">
+                            {{-- {{ $products->withQueryString()->links() }} --}}
+                        </div>
+                    @endif
                 </div>
-                <div class="brand">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Nikon_Logo.svg/1200px-Nikon_Logo.svg.png"
-                        width="100px" alt="Nikon">
-                </div>
-                <div class="brand">
-                    <img src="https://www.avc-group.com/assets/manufacturers/Sony/Sony-Logo.png" width="100px"
-                        alt="Sony">
-                </div>
-                <div class="brand">
-                    <img src="https://images.seeklogo.com/logo-png/5/1/fujifilm-new-logo-png_seeklogo-58165.png?v=1956249132038839752"
-                        width="100px" alt="Fujifilm">
-                </div>
-                <div class="brand">
-                    <img src="https://cdn.freebiesupply.com/logos/large/2x/panasonic-logo-png-transparent.png"
-                        width="100px" alt="Panasonic">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Special Offer -->
-    <section class="special-offer">
-        <div class="container">
-            <div class="offer-content">
-                <div class="offer-text">
-                    <span class="offer-label">Special Deal</span>
-                    <h2>Professional Photography Bundle</h2>
-                    <p>Get our premium camera with 3 lenses, tripod, and carrying case.</p>
-                    <ul class="offer-features">
-                        <li><i class="fas fa-check"></i> 45.7MP Full-Frame Sensor</li>
-                        <li><i class="fas fa-check"></i> 4K Ultra HD Video</li>
-                        <li><i class="fas fa-check"></i> 2-Year Extended Warranty</li>
-                        <li><i class="fas fa-check"></i> Free Photography Course</li>
-                    </ul>
-                    <div class="price-box">
-                        <div class="price">
-                            <span class="current">$2,399</span>
-                            <span class="old">$3,299</span>
-                        </div>
-                        <div class="timer">
-                            <div class="time-unit">
-                                <span class="number">2</span>
-                                <span class="label">Days</span>
-                            </div>
-                            <div class="time-unit">
-                                <span class="number">08</span>
-                                <span class="label">Hours</span>
-                            </div>
-                            <div class="time-unit">
-                                <span class="number">43</span>
-                                <span class="label">Mins</span>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#" class="btn btn-primary">Shop Now</a>
-                </div>
-                <div class="offer-image">
-                    <img src="https://filmcamerastore.co.uk/cdn/shop/files/zenit-122-50th-anniversary-kmz-special-edition-35mm-film-camera-with-58mm-helios-f1-8-lens--3.png?v=1689277143&width=1406"
-                        alt="Special Camera Offer">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2>What Our Customers Say</h2>
-                <p>Real reviews from professional photographers</p>
-            </div>
-
-            <div class="testimonials-slider">
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"The ProMaster X800 completely changed my photography game. The image quality is outstanding,
-                            and the build quality is exceptional."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="https://www.shutterstock.com/image-photo/handsome-happy-african-american-bearded-600nw-2460702995.jpg"
-                                alt="User Avatar">
-                        </div>
-                        <div class="author-info">
-                            <h4>Michael Roberts</h4>
-                            <span>Wildlife Photographer</span>
-                        </div>
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"The customer service at CameraHub is exceptional. They helped me find the perfect setup for
-                            my studio and offered great advice."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="https://www.shutterstock.com/image-photo/handsome-happy-african-american-bearded-600nw-2460702995.jpg"
-                                alt="User Avatar">
-                        </div>
-                        <div class="author-info">
-                            <h4>Samantha Lee</h4>
-                            <span>Portrait Photographer</span>
-                        </div>
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Blog Posts -->
-    <section class="blog-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Photography Tips & News</h2>
-                <p>Learn from experts and stay updated with the latest trends</p>
-            </div>
-
-            <div class="blog-grid">
-                <article class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://d3c0aoh0dus5lw.cloudfront.net/WP/wp-content/uploads/2017/11/cjasonbradley_170902_26266-864x577.jpg"
-                            alt="Photography Tips">
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> Feb 20, 2025</span>
-                            <span><i class="far fa-user"></i> Admin</span>
-                        </div>
-                        <h3><a href="#">10 Essential Camera Settings for Night Photography</a></h3>
-                        <p>Learn how to capture stunning night scenes with the right camera settings and equipment.</p>
-                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://media.greatbigphotographyworld.com/wp-content/uploads/2022/04/photographer-holding-a-nikon-camera.jpg"
-                            alt="Photography Tips">
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> Feb 18, 2025</span>
-                            <span><i class="far fa-user"></i> Admin</span>
-                        </div>
-                        <h3><a href="#">Comparison: Top 5 Professional Cameras of 2025</a></h3>
-                        <p>We compare the latest professional cameras to help you find the perfect tool for your
-                            photography needs.</p>
-                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://cdn.shopify.com/s/files/1/0070/7032/files/photographer.jpg?v=1710541843"
-                            alt="Photography Tips">
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span><i class="far fa-calendar"></i> Feb 15, 2025</span>
-                            <span><i class="far fa-user"></i> Admin</span>
-                        </div>
-                        <h3><a href="#">Essential Lens Guide for Portrait Photography</a></h3>
-                        <p>Discover which lenses will help you capture stunning portraits with beautiful bokeh effects.
-                        </p>
-                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
             </div>
         </div>
     </section>
@@ -1539,9 +1475,6 @@
 
     <!-- Back to Top Button -->
     <a href="#" class="back-to-top"><i class="fas fa-chevron-up"></i></a>
-
-    <!-- JavaScript -->
-    <script src="{{ asset('js/camera-store.js') }}"></script>
 </body>
 
 </html>

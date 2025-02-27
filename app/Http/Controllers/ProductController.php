@@ -2,12 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function all()
+    {
+        $subCategories = SubCategory::all();
+        $categories = Category::all();
+        $products = Product::all();
+
+        return view('products.all', compact('products', 'subCategories', 'categories'));
+    }
+
+    public function search(Request $request)
+    {
+        $subCategories = SubCategory::all();
+        $categories = Category::all();
+
+        $search = $request->input('search');
+
+        $products = Product::where('name', 'like', "%$search%")->get();
+
+        return view('products.all', ['products' => $products, 'categories' => $categories, 'subcategories' => $subCategories]);
+    }
+
     public function index()
     {
         $subCategories = SubCategory::all();
