@@ -16,7 +16,7 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|max:255',
             'description' => 'required|max:255'
         ]);
@@ -25,8 +25,6 @@ class CategoryController extends Controller
 
         $category->name = $request['name'];
         $category->description = $request['description'];
-
-        // dd($category);
 
         $category->save();
 
