@@ -22,7 +22,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     $categories = Category::all();
     $products = Product::paginate(4);
-    $cart_count = count(session()->get('cart'));
+    $cart_count = 0;
+    if (session('cart')!= null) {
+        $cart_count = count(session()->get('cart'));
+    }
     return view('welcome', compact('categories', 'products', 'cart_count'));
 });
 

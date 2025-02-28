@@ -14,8 +14,10 @@ class ProductController extends Controller
         $subCategories = SubCategory::all();
         $categories = Category::all();
         $products = Product::paginate(6);
-
-        $cart_count = count(session()->get('cart'));
+        $cart_count = 0;
+        if (session('cart') != null) {
+            $cart_count = count(session()->get('cart'));
+        }
 
         return view('products.all', compact('products', 'subCategories', 'categories', 'cart_count'));
     }
@@ -75,7 +77,10 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::find($id);
-        $cart_count = count(session()->get('cart'));
+        $cart_count = 0;
+        if (session('cart')!= null) {
+            $cart_count = count(session()->get('cart'));
+        }
         $relatedProducts = Product::where('subcategory_id', $product->subcategory->id)->paginate(4);
 
         return view('products.show', compact('product', 'relatedProducts', 'cart_count'));
@@ -141,7 +146,7 @@ class ProductController extends Controller
             // dd(count($cart));
         }
 
-        $cart_count = count($cart); 
+        $cart_count = count($cart);
         return view('products.cart', compact('cart', 'cart_count'));
     }
 
