@@ -1296,12 +1296,12 @@
         /* Quantity Control */
         .cart-quantity {
             margin: 0 auto;
-            max-width: 120px;
             display: flex;
             align-items: center;
             border: 1px solid #eee;
             border-radius: 4px;
             overflow: hidden;
+            width: fit-content;
         }
 
         .quantity-btn {
@@ -1656,12 +1656,6 @@
         </div>
     </header>
 
-    <!-- Page Title -->
-    {{-- <section class="page-title-client">
-        <div class="container">
-            <h1>All Products</h1>
-        </div>
-    </section> --}}
     <div class="container">
         <div class="breadcrumbs">
             <a href="">Home</a>
@@ -1730,14 +1724,10 @@
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $id }}">
                                         <div class="quantity-control cart-quantity">
-                                            <button type="button" class="quantity-btn minus"
-                                                data-id="{{ $id }}"><i class="fas fa-minus"></i></button>
-                                            <input type="number" name="quantity"
-                                                value="{{ $details['quantity'] ?? 1 }}" min="1"
-                                                max="{{ $details['stock'] ?? 99 }}" class="quantity-input"
-                                                data-id="{{ $id }}">
-                                            <button type="button" class="quantity-btn plus"
-                                                data-id="{{ $id }}"><i class="fas fa-plus"></i></button>
+
+                                            <input type="number" name="quantity" disabled
+                                                value="{{ $details['quantity'] ?? 1 }}" class="quantity-input">
+
                                         </div>
                                     </form>
                                 </div>
@@ -1773,12 +1763,8 @@
                             <span class="summary-price">
                                 @php
                                     $subtotal = 0;
-                                    foreach ($cart as $details) {
-                                        $price =
-                                            isset($details['sale_price']) && $details['sale_price'] < $details['price']
-                                                ? $details['sale_price']
-                                                : $details['price'];
-                                        $subtotal += $price * ($details['quantity'] ?? 1);
+                                    foreach ($cart as $cart_item) {
+                                        $subtotal += $cart_item['price'] * ($cart_item['quantity']);
                                     }
                                 @endphp
                                 ${{ number_format($subtotal, 2) }}
@@ -1789,7 +1775,7 @@
                             <span>Shipping Fee</span>
                             <span class="summary-price">
                                 @php
-                                    $shipping = $subtotal > 100 ? 0 : 10;
+                                    $shipping = 0;
                                 @endphp
                                 ${{ number_format($shipping, 2) }}
                                 @if ($shipping == 0)
@@ -1798,15 +1784,9 @@
                             </span>
                         </div>
 
-                        @if ($subtotal > 100 && $shipping == 0)
+                        @if ($shipping == 0)
                             <div class="shipping-message">
                                 <i class="fas fa-truck"></i> Free shipping applied!
-                            </div>
-                        @elseif($subtotal < 100)
-                            <div class="shipping-message">
-                                <i class="fas fa-info-circle"></i> Add ${{ number_format(100 - $subtotal, 2) }} more
-                                to
-                                get free shipping!
                             </div>
                         @endif
 
@@ -1911,77 +1891,6 @@
 
     <!-- Back to Top Button -->
     <a href="#" class="back-to-top"><i class="fas fa-chevron-up"></i></a>
-    @section('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Quantity control
-                const minusBtns = document.querySelectorAll('.quantity-btn.minus');
-                const plusBtns = document.querySelectorAll('.quantity-btn.plus');
-
-                minusBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = this.getAttribute('data-id');
-                        const inputField = document.querySelector(`.quantity-input[data-id="${id}"]`);
-                        let currentValue = parseInt(inputField.value);
-
-                        if (currentValue > 1) {
-                            inputField.value = currentValue - 1;
-                            updateCart(id, currentValue - 1);
-                        }
-                    });
-                });
-
-                plusBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = this.getAttribute('data-id');
-                        const inputField = document.querySelector(`.quantity-input[data-id="${id}"]`);
-                        let currentValue = parseInt(inputField.value);
-                        const maxQuantity = parseInt(inputField.getAttribute('max'));
-
-                        if (currentValue < maxQuantity) {
-                            inputField.value = currentValue + 1;
-                            updateCart(id, currentValue + 1);
-                        }
-                    });
-                });
-
-                // Quantity input change
-                const quantityInputs = document.querySelectorAll('.quantity-input');
-                quantityInputs.forEach(input => {
-                    input.addEventListener('change', function() {
-                        const id = this.getAttribute('data-id');
-                        updateCart(id, this.value);
-                    });
-                });
-
-                // Function to update cart
-                function updateCart(id, quantity) {
-                    // Send AJAX request to update cart
-                    fetch('{{ route('cart.update') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                product_id: id,
-                                quantity: quantity
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            // Reload the page to show updated cart
-                            if (data.success) {
-                                window.location.reload();
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error updating cart:', error);
-                        });
-                }
-            });
-        </script>
-    @endsection
 </body>
 
 </html>
