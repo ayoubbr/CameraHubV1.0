@@ -27,4 +27,4 @@ mix.js('resources/js/app.js', 'public/js')
         require('autoprefixer'),
     ])
     // Keep your regular CSS compilation as well
-    .css('resources/css/custom.css', 'public/css');
+    .css('resources/css/checkout.css', 'public/css');

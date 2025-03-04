@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubCategoryController;
@@ -37,6 +38,7 @@ Route::post('/cart/add', [ProductController::class, 'addToCart'])->name('cart.ad
 Route::put('/cart/update', [ProductController::class, 'updateCart'])->name('cart.update');
 Route::post('/cart/remove', [ProductController::class, 'removeFromCart'])->name('cart.remove');
 Route::get('/checkout', [ProductController::class, 'checkout'])->name('checkout');
+Route::get('/orders', [OrderController::class, 'index'])->name('odrers.index');
 
 
 Route::get('/dashboard', function () {

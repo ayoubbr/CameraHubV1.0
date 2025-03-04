@@ -78,7 +78,7 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
         $cart_count = 0;
-        if (session('cart')!= null) {
+        if (session('cart') != null) {
             $cart_count = count(session()->get('cart'));
         }
         $relatedProducts = Product::where('subcategory_id', $product->subcategory->id)->paginate(4);
@@ -166,5 +166,10 @@ class ProductController extends Controller
         }
 
         return redirect()->route('cart')->with('error', 'Failed to remove product!');
+    }
+
+    public function checkout()
+    {
+        return view('orders.checkout');
     }
 }

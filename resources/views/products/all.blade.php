@@ -1134,9 +1134,6 @@
         <div class="container">
             <h1>All Products</h1>
         </div>
-        {{-- @php
-        dd(session()->all());
-        @endphp --}}
     </section>
     <x-error-message />
     <x-success-message />
