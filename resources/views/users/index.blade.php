@@ -52,13 +52,22 @@
                                                         {{ $user->updated_at }}
                                                     </td>
                                                     <td class="table-cell">
-                                                        @if (auth()->user()->roles->pluck('name')[0] ?? '' === 'customer')
-                                                            {{ auth()->user()->name }}
-                                                        @endif
+                                                        {{ $user->roles[0]->name }}
                                                     </td>
                                                     <td class="table-cell-action">
-                                                        <a href="{{ route('users.edit', $user) }}"
-                                                            class="edit-link">Edit</a>
+                                                        {{-- <a href="{{ route('users.edit', $user) }}"
+                                                            class="edit-link">Edit</a> --}}
+                                                        <form action="{{ route('roles.update') }}" method="post">
+                                                            @csrf
+                                                            @method('put')
+                                                            <input type="hidden" name="role_name"
+                                                                value="{{ $user->roles[0]->name }}">
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $user->id }}">
+                                                            <button class="role-change" type="submit">
+                                                                Change role
+                                                            </button>
+                                                        </form>
                                                     </td>
                                                 </tr>
                                             @endforeach

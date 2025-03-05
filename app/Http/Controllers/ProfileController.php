@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProfileController extends Controller
@@ -23,5 +25,8 @@ class ProfileController extends Controller
         }
 
         return redirect()->route('profile')->with('message', 'Profile saved successfully');
+
+        // $category = Category::find(1);
+        // dd($category->subcategories()->get());
     }
 }

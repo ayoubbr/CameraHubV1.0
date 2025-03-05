@@ -2365,16 +2365,16 @@ body {
     .product-details {
         flex-direction: column;
     }
-    
+
     .product-gallery,
     .product-info-details {
         width: 100%;
     }
-    
+
     .product-name {
         font-size: 24px;
     }
-    
+
     .products-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
@@ -2384,10 +2384,16 @@ body {
     .products-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
-    
+
     .social-share {
         width: 32px;
         height: 32px;
     }
 }
 
+.role-change {
+    background-color: #3c6492;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+}

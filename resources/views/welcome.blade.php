@@ -1125,8 +1125,16 @@
                         @if (Route::has('login'))
                             @auth
                                 <a href="{{ route('dashboard') }}" class="account-link"><i class="fas fa-user"></i></a>
+                                <form action="{{ route('logout') }}" method="post">
+                                    @csrf
+                                    @method('post')
+                                    <button type="submit" class="account-link"><i
+                                            class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                                </form>
                             @else
                                 <a href="{{ route('login') }}" class="account-link"><i class="fas fa-sign-in-alt"></i></a>
+                                <a href="{{ route('register') }}" class="account-link"><i
+                                        class="fa-solid fa-user-plus"></i></a>
                             @endauth
                         @endif
 
@@ -1148,7 +1156,7 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
-            
+
             <div class="hero-content">
                 <h2>Professional Cameras for Every Photographer</h2>
                 <p>Discover the perfect equipment to capture your vision with unparalleled clarity and precision.</p>

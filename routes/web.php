@@ -5,6 +5,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\UserController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,7 @@ Route::get('/', function () {
     $categories = Category::all();
     $products = Product::paginate(4);
     $cart_count = 0;
-    if (session('cart')!= null) {
+    if (session('cart') != null) {
         $cart_count = count(session()->get('cart'));
     }
     return view('welcome', compact('categories', 'products', 'cart_count'));
@@ -41,15 +42,18 @@ Route::get('/checkout', [ProductController::class, 'checkout'])->name('checkout'
 Route::get('/orders', [OrderController::class, 'index'])->name('odrers.index');
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard')->middleware('auth');
+
+
+Route::group( ['middleware' => ['role:admin']],function () {
+        Route::get('/dashboard', function () {
+            return view('dashboard');
+        })->name('dashboard');
+    }
+);
+
+
 
 Route::prefix('admin')->middleware('auth')->group(function () {
-
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
 
     Route::view('/profile', 'profile')->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -66,6 +70,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::get('products', [ProductController::class, 'index'])->name('products');
     Route::post('products/store', [ProductController::class, 'store'])->name('products.store');
+
+    Route::put('roles/update', [UserController::class, 'update'])->name('roles.update');
 });
 
 require __DIR__ . '/auth.php';
