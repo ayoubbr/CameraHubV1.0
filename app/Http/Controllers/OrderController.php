@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Stripe\Payout;
 
 class OrderController extends Controller
 {
@@ -68,27 +70,28 @@ class OrderController extends Controller
 
                 $product->decrement('stock', $item['quantity']);
             }
-            // session()->forget('cart');
+            session()->forget('cart');
 
             DB::commit();
 
-            return redirect()->route('orders.paiement', $order->id)
+            return redirect()->route('payment.process', $order->id)
                 ->with('message', 'Order placed successfully!');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to place order: ' . $e->getMessage());
         }
     }
-    public function paiement($orderId) {
-        dd($orderId);
-    }
+    // public function paiement($orderId) {
+    //     dd($orderId);
+    // }
 
     public function show($orderId)
     {
         $order = Order::with('orderItems.product', 'address', 'user')
             ->findOrFail($orderId);
+        $payment = Payment::where('order_id', $orderId)->first();
 
-        return view('orders.show', compact('order'));
+        return view('orders.show', compact('order', 'payment'));
     }
 
     public function index()

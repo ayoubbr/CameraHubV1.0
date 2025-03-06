@@ -56,14 +56,14 @@
                                 </span>
                             </td>
                             <td class="order-cell action-cell">
-                                <a href="{{ route('admin.orders.show', $order->id) }}" class="action-btn view-btn">View</a>
+                                {{-- <a href="{{ route('admin.orders.show', $order->id) }}" class="action-btn view-btn">View</a>
                                 <a href="{{ route('admin.orders.edit', $order->id) }}" class="action-btn edit-btn">Edit</a>
                                 <button type="button" class="action-btn delete-btn" 
                                     data-order-id="{{ $order->id }}" 
                                     data-toggle="modal" 
                                     data-target="#deleteOrderModal">
                                     Delete
-                                </button>
+                                </button> --}}
                             </td>
                         </tr>
                     @endforeach
@@ -71,7 +71,7 @@
             </table>
 
             <div class="pagination-container">
-                {{ $orders->links() }}
+                {{-- {{ $orders->links() }} --}}
             </div>
         @else
             <div class="empty-state">

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubCategoryController;
@@ -78,7 +79,11 @@ Route::group(
         Route::get('/checkout', [ProductController::class, 'checkout'])->name('checkout');
         Route::get('/orders', [OrderController::class, 'all'])->name('odrers.index');
         Route::post('/orders/place', [OrderController::class, 'store'])->name('place.order');
-        Route::get('/orders/paiement/{orderId}', [OrderController::class, 'paiement'])->name('orders.paiement');
+        Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show');
+        // Route::get('/orders/paiement/{orderId}', [OrderController::class, 'paiement'])->name('orders.paiement');
+        Route::get('/order/{orderId}/payment', [PaymentController::class, 'processPayment'])->name('payment.process');
+        Route::get('/payment/success/{orderId}', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+        Route::get('/payment/cancel/{orderId}', [PaymentController::class, 'paymentCancel'])->name('payment.cancel');
     }
 );
 // Route::prefix('admin')->middleware('auth')->group(function () {});
