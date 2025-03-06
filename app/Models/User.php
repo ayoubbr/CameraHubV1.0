@@ -50,4 +50,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Product::class, 'admin_id');
     }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class, 'client_id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'client_id');
+    }
 }

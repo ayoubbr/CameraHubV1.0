@@ -49,6 +49,17 @@
                                     <x-input id="image" class="form-control" type="text" name="image"
                                         autofocus />
                                 </div>
+                                 {{-- <div class="form-group">
+                                    <x-label for="category_name" :value="__('Category')" />
+                                    <x-select id="category_name" name="category_name">
+                                        <option value="" selected disabled hidden>
+                                            {{ __('Choose a Category') }}
+                                        </option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->name }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </x-select>
+                                </div> --}}
                                 <div class="form-group">
                                     <x-label for="subcategory_name" :value="__('Sub Category')" />
                                     <x-select id="subcategory_name" name="subcategory_name">

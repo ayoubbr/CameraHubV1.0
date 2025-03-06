@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\SubCategory;
@@ -37,9 +38,10 @@ class ProductController extends Controller
     public function index()
     {
         $subCategories = SubCategory::all();
+        $categories = Category::all();
         $products = Product::all();
 
-        return view('products.index', compact('products', 'subCategories'));
+        return view('products.index', compact('products', 'subCategories', 'categories'));
     }
 
     public function store(Request $request)
@@ -170,6 +172,11 @@ class ProductController extends Controller
 
     public function checkout()
     {
-        return view('orders.checkout');
+        $cart = session()->get('cart', []);
+        $cart_count = count($cart);
+        $addresses = auth()->user()->addresses;
+        // dd($addresses);
+
+        return view('orders.checkout', compact('cart', 'cart_count', 'addresses'));
     }
 }

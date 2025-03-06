@@ -1093,64 +1093,7 @@
 
 <body>
     <!-- Header Section -->
-    <header class="site-header">
-        <div class="container">
-            <div class="header-wrapper">
-                <div class="logo">
-                    <a href="{{ url('/') }}">
-                        <h1><i class="fas fa-camera-retro"></i> CameraHub</h1>
-                    </a>
-                </div>
-
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="#" class="active">Home</a></li>
-                        <li><a href="#">Shop</a></li>
-                        <li><a href="#">Brands</a></li>
-                        <li><a href="#">Lenses</a></li>
-                        <li><a href="#">Accessories</a></li>
-                        <li><a href="#">Blog</a></li>
-                    </ul>
-                </nav>
-
-                <div class="header-actions">
-                    <div class="search-form">
-                        <form action="#" method="GET">
-                            <input type="text" placeholder="Search products..." name="search">
-                            <button type="submit"><i class="fas fa-search"></i></button>
-                        </form>
-                    </div>
-
-                    <div class="user-actions">
-                        @if (Route::has('login'))
-                            @auth
-                                <a href="{{ route('dashboard') }}" class="account-link"><i class="fas fa-user"></i></a>
-                                <form action="{{ route('logout') }}" method="post">
-                                    @csrf
-                                    @method('post')
-                                    <button type="submit" class="account-link"><i
-                                            class="fa-solid fa-arrow-right-from-bracket"></i></button>
-                                </form>
-                            @else
-                                <a href="{{ route('login') }}" class="account-link"><i class="fas fa-sign-in-alt"></i></a>
-                                <a href="{{ route('register') }}" class="account-link"><i
-                                        class="fa-solid fa-user-plus"></i></a>
-                            @endauth
-                        @endif
-
-                        <a href="{{ route('cart') }}" class="cart-link">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">{{ $cart_count }}</span>
-                        </a>
-                    </div>
-
-                    <button class="mobile-menu-toggle">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
+    @include('components.header')
     <x-error-message />
     <x-success-message />
     <!-- Hero Section -->
@@ -1276,8 +1219,8 @@
         <div class="container">
             <div class="brands-wrapper">
                 <div class="brand">
-                    <img src="https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/canon-512.png"
-                        width="100px" alt="Canon">
+                    <img src="https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/canon-512.png" width="100px"
+                        alt="Canon">
                 </div>
                 <div class="brand">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Nikon_Logo.svg/1200px-Nikon_Logo.svg.png"
@@ -1490,76 +1433,8 @@
     </section>
 
     <!-- Footer -->
-    <footer class="site-footer">
-        <div class="container">
-            <div class="footer-top">
-                <div class="footer-column">
-                    <div class="footer-logo">
-                        <h2><i class="fas fa-camera-retro"></i> CameraHub</h2>
-                    </div>
-                    <p>Your trusted source for professional photography equipment since 2010.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
+    @include('components.footer')
 
-                <div class="footer-column">
-                    <h3>Shop</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Cameras</a></li>
-                        <li><a href="#">Lenses</a></li>
-                        <li><a href="#">Tripods</a></li>
-                        <li><a href="#">Lighting</a></li>
-                        <li><a href="#">Accessories</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h3>Account</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">My Account</a></li>
-                        <li><a href="#">Order History</a></li>
-                        <li><a href="#">Wishlist</a></li>
-                        <li><a href="#">Returns</a></li>
-                        <li><a href="#">Gift Cards</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h3>Information</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms & Conditions</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h3>Contact</h3>
-                    <ul class="contact-info">
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Camera Street, Photo City</li>
-                        <li><i class="fas fa-phone"></i> (123) 456-7890</li>
-                        <li><i class="fas fa-envelope"></i> info@camerahub.com</li>
-                        <li><i class="fas fa-clock"></i> Mon-Fri: 9AM - 6PM</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <div class="copyright">
-                    <p>&copy; {{ date('Y') }} CameraHub. All Rights Reserved.</p>
-                </div>
-                <div class="payment-methods">
-                    <img src="{{ asset('images/payment-methods.png') }}" alt="Payment Methods">
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <!-- Back to Top Button -->
     <a href="#" class="back-to-top"><i class="fas fa-chevron-up"></i></a>
